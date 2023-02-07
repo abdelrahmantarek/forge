@@ -1,43 +1,70 @@
-<<<<<<< HEAD
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+<<<<<<< Please follow the steps
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+## Android
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+    android/app/src/main/AndroidManifest.xml ->>>>>>>>
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
-## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+   <application
+        android:usesCleartextTraffic="true"......
 
-## Getting started
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:hardwareAccelerated="true"......
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
 
-## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+## Ios
+
+    ios/Runner/Info.plist ->>>>>>>>
+
+
+      <key>NSAppTransportSecurity</key>
+      <dict>
+          <key>NSAllowsArbitraryLoads</key>
+          <true/>
+          <key>NSAllowsArbitraryLoadsInWebContent</key>
+          <true/>
+      </dict>
+
+
+## Example
 
 ```dart
-const like = 'sample';
+
+class ForgeEditImagePage extends StatefulWidget {
+  static const String routeName = "/ForgeEditImagePage";
+  final dynamic arguments;
+  const ForgeEditImagePage({Key? key, required this.arguments}) : super(key: key);
+  @override
+  _ForgeEditImagePageState createState() => _ForgeEditImagePageState();
+}
+
+class _ForgeEditImagePageState extends State<ForgeEditImagePage> {
+  
+  @override
+  Widget build(BuildContext context) {
+    
+    return ForgeMarkUp(
+      url: "url",
+      base64: "base64",
+      imageUrl: "imageUrl",
+    );
+    
+  }
+  
+}
+
 ```
 
-## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
-=======
+
+
+
 # forge
 >>>>>>> 5d4808210b0068e8e214c26c16728e17d33975b3
