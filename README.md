@@ -7,15 +7,15 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-
-
-   <application
+    
+    <application
         android:usesCleartextTraffic="true"......
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:hardwareAccelerated="true"......
+
+
 
 
 
