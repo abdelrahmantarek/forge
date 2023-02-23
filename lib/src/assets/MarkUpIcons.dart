@@ -22,6 +22,7 @@ class MarkUpIcons{
 
 
   // mark up
+  static const String colors = "packages/forge/assets/forge/icons/color-palette.png";
   static const String addText = "packages/forge/assets/forge/icons/add-text.png";
   static const String arrowRight = "packages/forge/assets/forge/icons/arrow-right.png";
   static const String circle = "packages/forge/assets/forge/icons/circle.png";
@@ -40,9 +41,12 @@ class MarkUpIcons{
   static const String symbols = "packages/forge/assets/forge/icons/symbols.png";
   static const String highlight = "packages/forge/assets/forge/icons/highlight.png";
 
+  static const String thickness_thin = "packages/forge/assets/forge/icons/thickness-thin.png";
+  static const String thickness_normal = "packages/forge/assets/forge/icons/thickness-normal.png";
+  static const String thickness_thick = "packages/forge/assets/forge/icons/thickness-thick.png";
+  static const String thickness_very_thick = "packages/forge/assets/forge/icons/thickness-very-thick.png";
+
 
   static const String hand = "packages/forge/assets/forge/icons/hand.png";
-
-
 
 }

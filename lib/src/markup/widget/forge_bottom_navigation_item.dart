@@ -29,6 +29,7 @@ class _MarkUpBottomNavigation extends StatelessWidget {
 
             BottomNavigationItemMarkUp(
               onTap: (){
+                // controller.evaluateJavascript("onMarkupViewerLoaded()");
                 ForgeGroupMarkUpColors.showPop(
                   context,
                   markUpStyle: controller.currentMarkUpStyle,
@@ -38,8 +39,9 @@ class _MarkUpBottomNavigation extends StatelessWidget {
               onLongPress: (){
                 controller.onViewerLoaded();
               },
-              icon: Image.asset(MarkUpIcons.edit2,color: Theme.of(context).primaryColor,),
+              icon: Image.asset(MarkUpIcons.colors,color: Theme.of(context).primaryColor,),
             ),
+
 
             BottomNavigationItemMarkUp(
               onTap: (){
@@ -47,6 +49,7 @@ class _MarkUpBottomNavigation extends StatelessWidget {
               },
               icon: Image.asset(MarkUpIcons.groupEditCircle,color: Theme.of(context).primaryColor,),
             ),
+
 
             GetBuilder<ForgeMarkUpController>(
               id: "selected",
@@ -61,20 +64,31 @@ class _MarkUpBottomNavigation extends StatelessWidget {
               },
             ),
 
-            BottomNavigationItemMarkUp(
-              onTap: (){
-                controller.undo();
+
+            GetBuilder<ForgeMarkUpController>(
+              id: ForgeMarkUpController.undoRedoBuilder,
+              builder: (controller){
+                return BottomNavigationItemMarkUp(
+                  onTap: controller.undoValue ? (){
+                    controller.undo();
+                  } : null,
+                  icon: Image.asset(MarkUpIcons.undo,color: controller.undoValue ? Theme.of(context).primaryColor : Colors.grey,),
+                );
               },
-              icon:  Image.asset(MarkUpIcons.undo,color: Theme.of(context).primaryColor,),
             ),
 
-            BottomNavigationItemMarkUp(
-              onTap: (){
-                controller.redo();
-              },
-              icon: Image.asset(MarkUpIcons.redo,color: Theme.of(context).primaryColor,),
-            ),
 
+            GetBuilder<ForgeMarkUpController>(
+              id: ForgeMarkUpController.undoRedoBuilder,
+              builder: (controller){
+                return BottomNavigationItemMarkUp(
+                  onTap: controller.redoValue ? (){
+                    controller.redo();
+                  } : null,
+                  icon: Image.asset(MarkUpIcons.redo,color:  controller.redoValue ? Theme.of(context).primaryColor : Colors.grey,),
+                );
+              },
+            ),
 
 
 
@@ -84,14 +98,6 @@ class _MarkUpBottomNavigation extends StatelessWidget {
               },
               icon:  Image.asset(MarkUpIcons.rotate,color: Theme.of(context).primaryColor,),
             ),
-
-            if(context.isLandscape) BottomNavigationItemMarkUp(
-              onTap: (){
-                controller.delete();
-              },
-              icon: Image.asset(MarkUpIcons.delete,color: Theme.of(context).primaryColor,),
-            ),
-
 
 
             if(context.isLandscape) GetBuilder<ForgeMarkUpController>(
@@ -109,13 +115,13 @@ class _MarkUpBottomNavigation extends StatelessWidget {
               },
             ),
 
+
             if(context.isLandscape) BottomNavigationItemMarkUp(
               onTap: (){
                 controller.save();
               },
               icon: Icon(Icons.save,size: iconSize + 5,),
             ),
-
 
 
           ],

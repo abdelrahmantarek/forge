@@ -32,12 +32,12 @@ _markUpAppBar(BuildContext context){
         },
       ),
 
-      if(!context.isLandscape) IconButton(
-        onPressed: (){
-          controller.delete();
-        },
-        icon: Image.asset(MarkUpIcons.delete,width: iconSize,color: Colors.white,),
-      ),
+      // if(!context.isLandscape) IconButton(
+      //   onPressed: (){
+      //     controller.delete();
+      //   },
+      //   icon: Image.asset(MarkUpIcons.delete,width: iconSize,color: Colors.white,),
+      // ),
 
       if(!context.isLandscape) IconButton(
         onPressed: (){

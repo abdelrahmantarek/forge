@@ -52,8 +52,13 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
   bool forgeLoading = true;
 
   static const String LOG = "ForgeMarkUpController : ";
+  static const String undoRedoBuilder = "undoRedoBuilder";
 
   ForgeMarkUpController({this.base64,this.imageUrl,this.logJavaScriptFunctions = false});
+
+  bool redoValue = false;
+
+  bool undoValue = false;
 
 
   @override
@@ -230,5 +235,20 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
     dio.Response response = await dio.Dio().get(imageUrl,options: dio.Options(responseType: dio.ResponseType.bytes),);
     return base64Encode(response.data);
   }
+
+
+  void onHistoryChanged(message) {
+    log("onHistoryChanged : $message");
+    var json = jsonDecode(message.toString());
+    redoValue = !json["redo"];
+    undoValue = !json["undo"];
+    update([undoRedoBuilder]);
+  }
+
+
+  bool get hasNoChanged{
+    return undoValue == false;
+  }
+
 
 }

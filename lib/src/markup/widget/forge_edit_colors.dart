@@ -27,12 +27,12 @@ class ForgeGroupMarkUpColors extends StatefulWidget {
 
 class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
 
-  final List<String> ticknessItems = [
-    'Thin',
-    'Normal',
-    'Thick',
-    'Very Thick',
-  ];
+  // final List<String> ticknessItems = [
+  //   'Thin',
+  //   'Normal',
+  //   'Thick',
+  //   'Very Thick',
+  // ];
 
 
 
@@ -146,11 +146,78 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
                               Expanded(
                                 flex: 3,
                                 child: CustomDropDown<String?>(
-                                  title: "Thickness",
+                                  title: "Thin",
                                   hint: markUpStyle.thickness,
-                                  items: ticknessItems,
-                                  value: markUpStyle.thickness,
+                                  icon: const SizedBox(),
+                                  selectedItemBuilder: (context){
+                                    return [
+                                      Row(
+                                        children: [
+                                          Text(markUpStyle.thickness,style: const TextStyle(
+                                            fontSize: 15
+                                          ),)
+                                        ],
+                                      ),
+                                    ];
+                                  },
+                                  customItems: [
+
+                                    DropdownMenuItem<String>(
+                                      value: "Thin",
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            child: Text("Thin"),
+                                          ),
+                                          const SizedBox(width: 10,),
+                                          Expanded(
+                                            child: Image.asset(MarkUpIcons.thickness_thin,color: Colors.black),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+
+                                    DropdownMenuItem<String>(
+                                      value: "Normal",
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            child: Text("Normal"),
+                                          ),
+                                          const SizedBox(width: 10,),
+                                          Expanded(
+                                            child: Image.asset(MarkUpIcons.thickness_normal,color: Colors.black),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+
+                                    DropdownMenuItem<String>(
+                                      value: "Thick",
+                                      child: Row(
+                                        children: [
+                                          const Expanded(child: Text("Thick")),
+                                          const SizedBox(width: 10,),
+                                          Expanded(child: Image.asset(MarkUpIcons.thickness_thick,color: Colors.black))
+                                        ],
+                                      ),
+                                    ),
+
+                                    DropdownMenuItem<String>(
+                                      value: "Very Thick",
+                                      child: Row(
+                                        children: [
+                                          const Expanded(child: Text("Very Thick")),
+                                          const SizedBox(width: 10,),
+                                          Expanded(child: Image.asset(MarkUpIcons.thickness_very_thick,color: Colors.black))
+                                        ],
+                                      ),
+                                    ),
+
+                                  ],
+                                  value: "Thin",
                                   onChanged: (value) {
+                                    log("onChanged : ${value}");
                                     setState(() {
                                       markUpStyle = markUpStyle.copyWith(thickness: value as String);
                                       widget.onChanged(markUpStyle);
@@ -344,7 +411,9 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
                         ],
                       ),
                     ),
+
                     const SizedBox(width: 10,),
+
                     InkWell(
                       onTap: (){
                         setState(() {
@@ -370,6 +439,7 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
                         ],
                       ),
                     ),
+
                     const SizedBox(width: 10,),
 
                     InkWell(
@@ -417,12 +487,15 @@ class CustomDropDown<T> extends StatelessWidget {
   final String title;
   final String hint;
   final String? afterText;
-  final List<T> items;
+  final List<T>? items;
+  final Widget? icon;
+  final List<DropdownMenuItem<T>>? customItems;
   final T value;
+  final DropdownButtonBuilder? selectedItemBuilder;
   final ValueChanged<T?>? onChanged;
   const CustomDropDown({Key? key,
-    required this.title, required this.items,
-    required this.value, this.onChanged, required this.hint,this.afterText}) : super(key: key);
+    required this.title, this.items,
+    required this.value, this.onChanged, required this.hint,this.afterText,this.customItems,this.icon,this.selectedItemBuilder}) : super(key: key);
   @override
   Widget build(BuildContext context) {
 
@@ -446,7 +519,8 @@ class CustomDropDown<T> extends StatelessWidget {
                     .hintColor,
               ),
             ),
-            items: items.map((item) =>
+            selectedItemBuilder:selectedItemBuilder,
+            items: customItems ?? items!.map((item) =>
                 DropdownMenuItem<T>(
                   value: item,
                   child: Text(
@@ -455,21 +529,19 @@ class CustomDropDown<T> extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
-                ))
-                .toList(),
+                )).toList(),
             value: value,
             onChanged: onChanged,
             buttonHeight: 40,
             itemHeight: 40,
             buttonWidth: MediaQuery.of(context).size.width,
-            icon: const Icon(
+            icon: icon ?? const Icon(
               Icons.arrow_downward_rounded,
               color: Colors.black,
             ),
             iconSize: 18,
             iconEnabledColor: Colors.yellow,
             iconDisabledColor: Colors.grey,
-
             buttonPadding: const EdgeInsets.only(left: 14, right: 14),
             buttonDecoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),

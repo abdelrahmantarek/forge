@@ -68,9 +68,9 @@ class MarkUpStyle{
   double get getThick{
     switch(thickness){
       case "Thin": return 0.02;
-      case "Normal": return 0.06;
-      case "Thick": return 0.010;
-      case "Very Thick": return 0.015;
+      case "Normal": return 0.08;
+      case "Thick": return 0.1;
+      case "Very Thick": return 0.2;
     }
     return 0.06;
   }

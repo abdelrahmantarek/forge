@@ -50,7 +50,6 @@ class CustomPopYesNo extends StatelessWidget {
                     const SizedBox(width: 10,),
                     Expanded(child: Text("Discard changes?",style: TextStyle(
                         color: Theme.of(context).primaryColor,
-                        fontSize: 20,
                         fontWeight: FontWeight.w600
                     ),),),
                   ],
@@ -62,7 +61,7 @@ class CustomPopYesNo extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Text("If you discard changes, you will not be able to get back to it again.",
                       textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 15,color: Color(0xFF828282)),
+                      style: TextStyle(color: Color(0xFF828282)),
                     )
                 ),
 
@@ -102,7 +101,7 @@ class CustomPopYesNo extends StatelessWidget {
                             shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(8.0))
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
                           ),
                           child: const Text("Yes,Discard changes"),
                         ),

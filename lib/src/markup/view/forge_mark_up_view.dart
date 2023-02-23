@@ -42,6 +42,7 @@ class _ForgeMarkUpState extends State<ForgeMarkUp> {
       imageUrl: widget.imageUrl,
       logJavaScriptFunctions: widget.logJavaScriptFunctions
     ));
+
     super.initState();
   }
 
@@ -51,21 +52,20 @@ class _ForgeMarkUpState extends State<ForgeMarkUp> {
     super.dispose();
   }
 
-
-
   // CustomPopYesNo
 
   @override
   Widget build(BuildContext context) {
 
-
     return WillPopScope(
       onWillPop: () async {
+        if(controller.hasNoChanged){
+          return true;
+        }
         bool? yes = await CustomPopYesNo.show();
         return yes ?? false;
       },
         child: Scaffold(
-
 
           appBar: _markUpAppBar(context),
 
@@ -205,12 +205,15 @@ class MarkUpWebView extends StatelessWidget {
       jsContent: const {
         EmbeddedJsContent(
           js: "function onViewerLoaded_Flutter() { console.log('Hi from JS') } "
+              "function onHistoryChanged_Flutter() { console.log('Hi from JS') }"
               "function onSave_Flutter() { console.log('Hi from JS') }",
         ),
         EmbeddedJsContent(
           webJs: "function onViewerLoaded_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }"
+              "function onHistoryChanged_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }"
               "function onSave_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }",
           mobileJs: "function onViewerLoaded_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) } "
+              "function onHistoryChanged_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }"
               "function onSave_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }",
         ),
       },
@@ -233,6 +236,13 @@ class MarkUpWebView extends StatelessWidget {
             callBack: (message) {
               if(onSaved != null) onSaved!();
               controller.onSaved(context);
+            }
+        ),
+
+        DartCallback(
+            name: 'onHistoryChanged_Flutter',
+            callBack: (message) {
+              controller.onHistoryChanged(message);
             }
         ),
 
