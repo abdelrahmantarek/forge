@@ -130,10 +130,10 @@ class WebViewX extends StatefulWidget implements view_interface.WebViewX {
   }) : super(key: key);
 
   @override
-  _WebViewXState createState() => _WebViewXState();
+  WebViewXState createState() => WebViewXState();
 }
 
-class _WebViewXState extends State<WebViewX> {
+class WebViewXState extends State<WebViewX> {
   late wf.WebViewController originalWebViewController;
   late WebViewXController webViewXController;
 

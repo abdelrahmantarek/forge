@@ -271,4 +271,9 @@ class WebViewXController extends ChangeNotifier
     _ignoreAllGesturesNotifier.dispose();
     super.dispose();
   }
+
+  @override
+  void updateDartCallbackChannels(Set<DartCallback> dartCallBacks) {
+    // TODO: implement updateDartCallbackChannels
+  }
 }

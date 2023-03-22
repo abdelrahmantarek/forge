@@ -1,5 +1,6 @@
 import 'package:webviewx/src/utils/source_type.dart';
 import 'package:webviewx/src/utils/webview_content_model.dart';
+import 'package:webviewx/webviewx.dart';
 
 /// Interface for controller
 abstract class WebViewXController<T> {
@@ -25,6 +26,11 @@ abstract class WebViewXController<T> {
   /// [SourceType] is [SourceType.urlBypass], which means it should
   /// use the bypass to fetch the web page content.
   bool get isCurrentContentURLBypass;
+
+
+  void updateDartCallbackChannels(Set<DartCallback> dartCallBacks);
+
+
 
   /// Set webview content to the specified `content`.
   /// Example: https://flutter.dev/

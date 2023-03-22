@@ -37,7 +37,7 @@ class _MarkUpBottomNavigation extends StatelessWidget {
                 );
               },
               onLongPress: (){
-                controller.onViewerLoaded();
+                controller.onViewerLoaded(context);
               },
               icon: Image.asset(MarkUpIcons.colors,color: Theme.of(context).primaryColor,),
             ),
@@ -100,25 +100,26 @@ class _MarkUpBottomNavigation extends StatelessWidget {
             ),
 
 
-            if(context.isLandscape) GetBuilder<ForgeMarkUpController>(
-              id: "selected",
-              builder: (controller){
-                return BottomNavigationItemMarkUp(
-                  onTap: (){
-                    controller.clearSelection();
-                  },
-                  icon: Image.asset(
-                    MarkUpIcons.hand,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                );
-              },
-            ),
+            // if(context.isLandscape) GetBuilder<ForgeMarkUpController>(
+            //   id: "selected",
+            //   builder: (controller){
+            //     return BottomNavigationItemMarkUp(
+            //       onTap: (){
+            //         controller.clearSelection();
+            //       },
+            //       icon: Image.asset(
+            //         MarkUpIcons.hand,
+            //         color: Theme.of(context).primaryColor,
+            //       ),
+            //     );
+            //   },
+            // ),
 
 
             if(context.isLandscape) BottomNavigationItemMarkUp(
               onTap: (){
                 controller.save();
+                // controller.test();
               },
               icon: Icon(Icons.save,size: iconSize + 5,),
             ),

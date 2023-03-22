@@ -14,6 +14,7 @@ class ForgeMarkUp extends StatefulWidget {
   final double? height;
   final bool logJavaScriptFunctions;
   final bool showLoading;
+  final Function()? onDeletePressed;
   const ForgeMarkUp({Key? key,
     required this.url,
     this.onMarkUpViewCrated,
@@ -25,6 +26,7 @@ class ForgeMarkUp extends StatefulWidget {
     this.imageUrl,
     this.logJavaScriptFunctions = false,
     this.showLoading = false,
+    this.onDeletePressed,
   }) : super(key: key);
   @override
   _ForgeMarkUpState createState() => _ForgeMarkUpState();
@@ -40,7 +42,9 @@ class _ForgeMarkUpState extends State<ForgeMarkUp> {
     controller = Get.put(ForgeMarkUpController(
       base64: widget.base64,
       imageUrl: widget.imageUrl,
-      logJavaScriptFunctions: widget.logJavaScriptFunctions
+      logJavaScriptFunctions: widget.logJavaScriptFunctions,
+      onMarkUpViewCrated: widget.onMarkUpViewCrated,
+      onSavedListener: widget.onSaved
     ));
 
     super.initState();
@@ -60,56 +64,55 @@ class _ForgeMarkUpState extends State<ForgeMarkUp> {
     return WillPopScope(
       onWillPop: () async {
         if(controller.hasNoChanged){
-          return true;
+          bool? yes = await CustomPopYesNo.show();
+          return yes ?? false;
         }
-        bool? yes = await CustomPopYesNo.show();
-        return yes ?? false;
+        return true;
       },
-        child: Scaffold(
+      child: Scaffold(
 
-          appBar: _markUpAppBar(context),
+        appBar: _markUpAppBar(context,onDeletePressed: widget.onDeletePressed),
 
-          body: Stack(
-            children: [
+        body: Stack(
+          children: [
 
-              MarkUpWebView(
-                url: widget.url,
-                onMarkUpViewCrated: widget.onMarkUpViewCrated,
-                onSaved: widget.onSaved,
-                onWebResourceError: widget.onWebResourceError,
-                width: widget.width,
-                height: widget.height,
-              ),
+            MarkUpWebView(
+              url: widget.url,
+              onMarkUpViewCrated: widget.onMarkUpViewCrated,
+              onSaved: widget.onSaved,
+              onWebResourceError: widget.onWebResourceError,
+              width: widget.width,
+              height: widget.height,
+            ),
 
-              if(widget.showLoading) GetBuilder<ForgeMarkUpController>(
-                  id: "loading",
-                  builder: (controller){
+            if(widget.showLoading) GetBuilder<ForgeMarkUpController>(
+                id: "loading",
+                builder: (controller){
 
-                    if(controller.forgeLoading == false){
-                      return const SizedBox();
-                    }
-
-                    return Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: const ForgeLoading(
-                        size: 140,
-                        title: "Reality",
-                      ),
-                    );
-
+                  if(controller.forgeLoading == false){
+                    return const SizedBox();
                   }
-              ),
 
-            ],
-          ),
+                  return Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: const ForgeLoading(
+                      size: 140,
+                      title: "Reality",
+                    ),
+                  );
 
-          bottomNavigationBar: const _MarkUpBottomNavigation(),
+                }
+            ),
 
+          ],
         ),
+
+        bottomNavigationBar: const _MarkUpBottomNavigation(),
+
+      ),
     );
-    
 
   }
 }
@@ -191,6 +194,21 @@ class MarkUpWebView extends StatelessWidget {
 
     final String contentBase64 = base64Encode(const Utf8Encoder().convert(html));
 
+    // log("WWWWW : ${[
+    //   "function onViewerLoaded_Flutter() { console.log('Hi from onViewerLoaded') }",
+    //   "function onHistoryChanged_Flutter() { console.log('Hi from onHistoryChanged') }",
+    //   "function onEditModeLeave_Flutter() { console.log('Hi from onEditModeLeave') }",
+    //   "function onSave_Flutter() { console.log('Hi from onSave') }",
+    // ].join(" ")}");
+
+    // log("WWWWW22222 : ${[
+    //   "function onViewerLoaded_Flutter() { console.log('Hi from onViewerLoaded') }",
+    //   "onHistoryChanged_Flutter={};",
+    //   "onHistoryChanged_Flutter.postMessage() { console.log('Hi from onHistoryChanged') }",
+    //   "function onEditModeLeave_Flutter() { console.log('Hi from onEditModeLeave') }",
+    //   "function onSave_Flutter() { console.log('Hi from onSave') }",
+    // ].join(" ")}");
+
     return WebViewX(
       width: width ?? MediaQuery.of(context).size.width,
       height: height ?? MediaQuery.of(context).size.height,
@@ -202,32 +220,41 @@ class MarkUpWebView extends StatelessWidget {
       onWebViewCreated: (webViewXController){
         controller.webViewXController = webViewXController;
       },
-      jsContent: const {
+      jsContent: {
         EmbeddedJsContent(
-          js: "function onViewerLoaded_Flutter() { console.log('Hi from JS') } "
-              "function onHistoryChanged_Flutter() { console.log('Hi from JS') }"
-              "function onSave_Flutter() { console.log('Hi from JS') }",
+          js: [
+            "function onViewerLoaded_Flutter() { console.log('Hi from onViewerLoaded') }",
+            "function onHistoryChanged_Flutter() { console.log('Hi from onHistoryChanged') }",
+            "function onEditModeLeave_Flutter() { console.log('Hi from onEditModeLeave') }",
+            "function onSave_Flutter() { console.log('Hi from onSave') }",
+          ].join(" ")
         ),
         EmbeddedJsContent(
-          webJs: "function onViewerLoaded_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }"
-              "function onHistoryChanged_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }"
-              "function onSave_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }",
-          mobileJs: "function onViewerLoaded_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) } "
-              "function onHistoryChanged_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }"
-              "function onSave_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }",
+          webJs: [
+            "function onViewerLoaded_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }   "
+            "function onHistoryChanged_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }",
+            "function onEditModeLeave_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }",
+            "function onSave_Flutter(msg) { TestDartCallback('Web callback says: ' + msg) }",
+          ].join(" "),
+          mobileJs: [
+            "function onViewerLoaded_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }"
+            "function onHistoryChanged_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }"
+            "function onEditModeLeave_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }"
+            "function onSave_Flutter(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }"
+          ].join(" "),
         ),
       },
       mobileSpecificParams: const MobileSpecificParams(
           androidEnableHybridComposition: true,
           debuggingEnabled: true
       ),
-      dartCallBacks:  {
+      dartCallBacks: {
 
         DartCallback(
             name: 'onViewerLoaded_Flutter',
             callBack: (message) {
               if(onMarkUpViewCrated != null) onMarkUpViewCrated!(controller);
-              controller.onViewerLoaded();
+              controller.onViewerLoaded(context);
             }
         ),
 
@@ -243,6 +270,13 @@ class MarkUpWebView extends StatelessWidget {
             name: 'onHistoryChanged_Flutter',
             callBack: (message) {
               controller.onHistoryChanged(message);
+            }
+        ),
+
+        DartCallback(
+            name: 'onEditModeLeave_Flutter',
+            callBack: (message) {
+              controller.onEditModeLeaveFlutter(message);
             }
         ),
 

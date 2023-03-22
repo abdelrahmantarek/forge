@@ -712,7 +712,7 @@ class WebViewController {
   Future<void> _updateWidget(WebView widget) async {
     _widget = widget;
     await _updateSettings(_webSettingsFromWidget(widget));
-    await _updateJavascriptChannels(widget.javascriptChannels);
+    await updateJavascriptChannels(widget.javascriptChannels);
   }
 
   Future<void> _updateSettings(WebSettings newSettings) {
@@ -722,7 +722,7 @@ class WebViewController {
     return _webViewPlatformController.updateSettings(update);
   }
 
-  Future<void> _updateJavascriptChannels(
+  Future<void> updateJavascriptChannels(
       Set<JavascriptChannel>? newChannels) async {
     final Set<String> currentChannels =
         _platformCallbacksHandler._javascriptChannels.keys.toSet();

@@ -10,8 +10,7 @@ import 'package:webviewx/src/utils/utils.dart';
 import 'package:webviewx/src/controller/interface.dart' as i;
 
 /// Mobile implementation
-class WebViewXController extends ChangeNotifier
-    implements i.WebViewXController<wf.WebViewController> {
+class WebViewXController extends ChangeNotifier implements i.WebViewXController<wf.WebViewController> {
   /// Webview controller connector
   @override
   late wf.WebViewController connector;
@@ -22,6 +21,9 @@ class WebViewXController extends ChangeNotifier
   /// INTERNAL
   /// Used to tell the last used [SourceType] and last headers.
   late WebViewContent value;
+
+
+
 
   /// Constructor
   WebViewXController({
@@ -259,4 +261,15 @@ class WebViewXController extends ChangeNotifier
     _ignoreAllGesturesNotifier.dispose();
     super.dispose();
   }
+
+  @override
+  void updateDartCallbackChannels(Set<DartCallback> dartCallBacks) {
+    connector.updateJavascriptChannels(dartCallBacks
+        .map((cb) => wf.JavascriptChannel(
+      name: cb.name,
+      onMessageReceived: (msg) => cb.callBack(msg.message),
+    ),
+    ).toSet());
+  }
+
 }

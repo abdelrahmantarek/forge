@@ -9,7 +9,7 @@ import 'package:forge/src/markup/model/device.dart';
 import 'package:forge/src/markup/widget/custom_pop_yes_no.dart';
 import 'package:forge/src/markup/widget/forge_loading.dart';
 import 'package:get/get.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' hide ModalBottomSheetRoute;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webviewx/webviewx.dart';
 
@@ -42,23 +42,68 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
   late WebViewXController webViewXController;
   late MarkUpStyle currentMarkUpStyle;
 
+  final OnMarkUpViewCrated? onMarkUpViewCrated;
+  final Function()? onSavedListener;
+
+
   String? base64;
   String? imageUrl;
 
   final bool logJavaScriptFunctions;
 
-  String selected = "";
+  RxString selected = "".obs;
+
+
 
   bool forgeLoading = true;
 
   static const String LOG = "ForgeMarkUpController : ";
   static const String undoRedoBuilder = "undoRedoBuilder";
 
-  ForgeMarkUpController({this.base64,this.imageUrl,this.logJavaScriptFunctions = false});
+  ForgeMarkUpController( {this.base64,this.imageUrl,this.logJavaScriptFunctions = false,this.onMarkUpViewCrated, this.onSavedListener,});
 
   bool redoValue = false;
 
   bool undoValue = false;
+
+
+  Set<DartCallback> dartCallBack(BuildContext context){
+    return {
+
+      DartCallback(
+          name: 'onViewerLoaded_Flutter',
+          callBack: (message) {
+            if(onMarkUpViewCrated != null) onMarkUpViewCrated!(this);
+            onViewerLoaded(context);
+          }
+      ),
+
+      DartCallback(
+          name: 'onSave_Flutter',
+          callBack: (message) {
+            if(onSavedListener != null) onSavedListener!();
+            onSaved(context);
+          }
+      ),
+
+      DartCallback(
+          name: 'onHistoryChanged_Flutter',
+          callBack: (message) {
+            onHistoryChanged(message);
+          }
+      ),
+
+      DartCallback(
+          name: 'onEditModeLeave_Flutter',
+          callBack: (message) {
+            onEditModeLeaveFlutter(message);
+          }
+      ),
+
+    };
+  }
+
+
 
 
   @override
@@ -74,40 +119,41 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
   @override
   void arrow() {
     onMarkUpToolClicked("arrow");
-    selected = "arrow";
+    selected.value = "arrow";
     updateUpStyle(currentMarkUpStyle);
   }
 
   @override
   void circle() {
     onMarkUpToolClicked("circle");
-    selected = "circle";
+    selected.value = "circle";
     updateUpStyle(currentMarkUpStyle);
   }
 
   @override
   void cloud() {
     onMarkUpToolClicked("cloud");
-    selected = "cloud";
+    selected.value = "cloud";
     updateUpStyle(currentMarkUpStyle);
   }
 
   @override
   void delete() {
     onMarkUpToolClicked("delete");
+    updateUpStyle(currentMarkUpStyle);
   }
 
   @override
   void highlight() {
     onMarkUpToolClicked("highlight");
-    selected = "highlight";
+    selected.value = "highlight";
     updateUpStyle(currentMarkUpStyle);
   }
 
   @override
   void rectangle() {
     onMarkUpToolClicked("rectangle");
-    selected = "rectangle";
+    selected.value = "rectangle";
     updateUpStyle(currentMarkUpStyle);
   }
 
@@ -124,31 +170,45 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
   @override
   void symbols() {
     onMarkUpToolClicked("symbols");
+    updateUpStyle(currentMarkUpStyle);
   }
 
   @override
   void text() {
     onMarkUpToolClicked("text");
-    selected = "text";
+    selected.value = "text";
     updateUpStyle(currentMarkUpStyle);
   }
 
   @override
   void stamp() {
     onMarkUpToolClicked("stamp");
+    updateUpStyle(currentMarkUpStyle);
   }
 
   @override
   void edit() {
-    onMarkUpToolClicked("edit");
+    if(editMode && selected.isNotEmpty){
+      if(selected.value == "edit"){
+        onMarkUpToolClicked("edit");
+      }else{
+        onMarkUpToolClicked("edit");
+        onMarkUpToolClicked("edit");
+      }
+    }else{
+      onMarkUpToolClicked("edit");
+    }
+    selected.value = "edit";
+    updateUpStyle(currentMarkUpStyle);
   }
 
   void clearSelection(){
-    edit();
-    edit();
-    selected = "";
-    update(["selected"]);
+    onMarkUpToolClicked("edit");
+    onMarkUpToolClicked("edit");
+    selected.value = "";
   }
+
+  // markupsComponent.onMarkupToolClicked({id:'text'})
 
   void onMarkUpToolClicked(String id){
     String function = "markupsComponent.onMarkupToolClicked({id:'$id'})";
@@ -183,6 +243,15 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
   @override
   void onInit() {
     getCurrentStyle();
+    selected.listen((p0) {
+      if(selected.value.isEmpty){
+        editMode = false;
+      }else{
+        editMode = true;
+      }
+      update(["selected"]);
+      log("selected mode $selected");
+    });
     super.onInit();
   }
 
@@ -194,11 +263,14 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
 
 
   void onSaved(BuildContext context) {
+
     showPopSuccess(context,"Saved");
+    hasNoChanged = false;
     clearSelection();
+
   }
 
-  void onViewerLoaded() async {
+  void onViewerLoaded(BuildContext context) async {
 
     if(this.base64 != null){
       await Future.delayed(const Duration(seconds: 1));
@@ -209,16 +281,23 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
     String base64 = await getBase64();
     evaluateJavascript("drawImage64OnPlane('data:image/png;base64,$base64',markupsComponent.markupViewer)");
     forgeLoading = false;
+    hasNoChanged = false;
     update(["loading"]);
+
+    _resetUndoRedo();
 
   }
 
 
-  Future<String> getBase64() async {
+  void _resetUndoRedo(){
 
-    if(base64 != null){
-      return base64!;
-    }
+    redoValue = false;
+    undoValue = false;
+    update([undoRedoBuilder]);
+
+  }
+
+  Future<String> getBase64() async {
 
     if(base64 != null){
       return base64!;
@@ -238,17 +317,32 @@ class ForgeMarkUpController extends GetxController with ForgeMarkUpOverrides{
 
 
   void onHistoryChanged(message) {
-    log("onHistoryChanged : $message");
+
     var json = jsonDecode(message.toString());
     redoValue = !json["redo"];
     undoValue = !json["undo"];
+
+
+    if(undoValue){
+      hasNoChanged = true;
+    }
+
+    log("onHistoryChanged : redo $redoValue undo $undoValue hasNoChanged $hasNoChanged");
+
     update([undoRedoBuilder]);
   }
 
 
-  bool get hasNoChanged{
-    return undoValue == false;
+
+  void onEditModeLeaveFlutter(message) {
+    editMode = false;
+    selected.value = "";
+    log("onEditModeLeave_Flutter : $message");
   }
 
+
+  bool editMode = false;
+
+  bool hasNoChanged = false;
 
 }
