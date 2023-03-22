@@ -21,7 +21,7 @@ dependencies:
   dio: ^4.0.0
   lottie:
   webviewx:
-    path: ./webviewx-main
+    path: ./packages/webviewx-main
 
 dev_dependencies:
   flutter_test:
