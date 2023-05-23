@@ -151,7 +151,7 @@ class BottomNavigationItemMarkUp extends StatelessWidget {
         decoration: BoxDecoration(
           // border: border ? Border.all(color: Theme.of(context).accentColor) : null,
             borderRadius: const BorderRadius.all(Radius.circular(12)),
-            color: selected ? Theme.of(context).accentColor.withOpacity(0.1) : Colors.transparent
+            color: selected ? Theme.of(context).primaryColor.withOpacity(0.1) : Colors.transparent
           // color: Colors.red,
         ),
         child:icon,

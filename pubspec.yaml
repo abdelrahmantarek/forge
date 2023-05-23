@@ -11,7 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    
 
   modal_bottom_sheet: ^3.0.0-pre
   dropdown_button2: ^1.9.2

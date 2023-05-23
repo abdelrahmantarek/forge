@@ -146,9 +146,11 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
                               Expanded(
                                 flex: 3,
                                 child: CustomDropDown<String?>(
-                                  title: "Thin",
+                                  title: "Thickness",
                                   hint: markUpStyle.thickness,
                                   icon: const SizedBox(),
+                                  itemHeight: 30,
+                                  dropdownWidth: 300,
                                   selectedItemBuilder: (context){
                                     return [
                                       Row(
@@ -167,7 +169,9 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
                                       child: Row(
                                         children: [
                                           const Expanded(
-                                            child: Text("Thin"),
+                                            child: Text("Thin",style: TextStyle(
+                                                fontSize: 15
+                                            ),),
                                           ),
                                           const SizedBox(width: 10,),
                                           Expanded(
@@ -182,7 +186,9 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
                                       child: Row(
                                         children: [
                                           const Expanded(
-                                            child: Text("Normal"),
+                                            child: Text("Normal",style: TextStyle(
+                                                fontSize: 15
+                                            ),),
                                           ),
                                           const SizedBox(width: 10,),
                                           Expanded(
@@ -196,7 +202,9 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
                                       value: "Thick",
                                       child: Row(
                                         children: [
-                                          const Expanded(child: Text("Thick")),
+                                          const Expanded(child: Text("Thick",style: TextStyle(
+                                              fontSize: 15
+                                          ),)),
                                           const SizedBox(width: 10,),
                                           Expanded(child: Image.asset(MarkUpIcons.thickness_thick,color: Colors.black))
                                         ],
@@ -207,7 +215,9 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
                                       value: "Very Thick",
                                       child: Row(
                                         children: [
-                                          const Expanded(child: Text("Very Thick")),
+                                          const Expanded(child: Text("Very Thick",style: TextStyle(
+                                              fontSize: 15
+                                          ),)),
                                           const SizedBox(width: 10,),
                                           Expanded(child: Image.asset(MarkUpIcons.thickness_very_thick,color: Colors.black))
                                         ],
@@ -378,7 +388,7 @@ class _ForgeGroupMarkUpColorsState extends State<ForgeGroupMarkUpColors> {
 
               const Padding(
                 padding: EdgeInsets.only(left: 15,right: 15,top: 10),
-                child: Text("background"),
+                child: Text("Background"),
               ),
 
               Padding(
@@ -489,13 +499,15 @@ class CustomDropDown<T> extends StatelessWidget {
   final String? afterText;
   final List<T>? items;
   final Widget? icon;
+  final double? dropdownWidth;
+  final double itemHeight;
   final List<DropdownMenuItem<T>>? customItems;
   final T value;
   final DropdownButtonBuilder? selectedItemBuilder;
   final ValueChanged<T?>? onChanged;
   const CustomDropDown({Key? key,
     required this.title, this.items,
-    required this.value, this.onChanged, required this.hint,this.afterText,this.customItems,this.icon,this.selectedItemBuilder}) : super(key: key);
+    required this.value, this.onChanged, this.dropdownWidth,this.itemHeight = 30, required this.hint,this.afterText,this.customItems,this.icon,this.selectedItemBuilder}) : super(key: key);
   @override
   Widget build(BuildContext context) {
 
@@ -504,7 +516,7 @@ class CustomDropDown<T> extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 5,right: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 0),
           child: Text(title),
         ),
         const SizedBox(height: 5,),
@@ -533,12 +545,13 @@ class CustomDropDown<T> extends StatelessWidget {
             value: value,
             onChanged: onChanged,
             buttonHeight: 40,
-            itemHeight: 40,
+            itemHeight: itemHeight,
             buttonWidth: MediaQuery.of(context).size.width,
             icon: icon ?? const Icon(
               Icons.arrow_downward_rounded,
               color: Colors.black,
             ),
+            // dropdownScrollPadding: EdgeInsets.only(bottom: 10),
             iconSize: 18,
             iconEnabledColor: Colors.yellow,
             iconDisabledColor: Colors.grey,
@@ -549,9 +562,9 @@ class CustomDropDown<T> extends StatelessWidget {
                 border: Border.all(color: Colors.grey.withOpacity(0.8),width: 0.5)
             ),
             buttonElevation: 0,
-            itemPadding: const EdgeInsets.only(left: 14, right: 14),
+            itemPadding: const EdgeInsets.only(left: 14, right: 14,bottom: 0),
             dropdownMaxHeight: 200,
-            dropdownWidth: 200,
+            dropdownWidth: dropdownWidth,
             dropdownPadding: null,
             dropdownDecoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -560,8 +573,6 @@ class CustomDropDown<T> extends StatelessWidget {
             scrollbarRadius: const Radius.circular(8),
             scrollbarThickness: 6,
             scrollbarAlwaysShow: true,
-
-
           ),
         ),
       ],

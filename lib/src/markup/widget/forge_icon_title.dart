@@ -20,9 +20,9 @@ class ForgeIconTitle extends StatelessWidget {
       height: isMobile ? 60 : 100,
       width: 80,
       decoration: BoxDecoration(
-          border: border ? Border.all(color: Theme.of(context).accentColor) : null,
+          border: border ? Border.all(color: Theme.of(context).primaryColor) : null,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
-          color: selected ? Theme.of(context).accentColor.withOpacity(0.1) : Colors.transparent
+          color: selected ? Theme.of(context).primaryColor.withOpacity(0.1) : Colors.transparent
         // color: Colors.red,
       ),
       child: Material(

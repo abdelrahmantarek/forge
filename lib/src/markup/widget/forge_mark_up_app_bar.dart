@@ -74,9 +74,10 @@ _markUpAppBar(BuildContext context,{Function()? onDeletePressed}){
           //   },
           // ),
 
+
           if(onDeletePressed != null) IconButton(
             onPressed:onDeletePressed,
-            icon: Image.asset(MarkUpIcons.delete,width: iconSize,color: Colors.white,),
+            icon: Image.asset(MarkUpIcons.delete,width: iconSize - 5,color: Colors.white,),
           ),
 
           if(!context.isLandscape) IconButton(
